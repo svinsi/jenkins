@@ -2,7 +2,7 @@ pipeline {
  	agent { node { label 'SILVER' } }
   options { 
         //only 1 build on the same time
-        disableConcurrentBuilds(), 
+        disableConcurrentBuilds() 
         //log 10 build
         buildDiscarder(logRotator(numToKeepStr: '10')) 
     }
