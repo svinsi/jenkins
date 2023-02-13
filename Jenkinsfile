@@ -1,23 +1,27 @@
 pipeline {
  	agent { node { label 'SILVER' } }
   options { 
-        disableConcurrentBuilds() 
+        //only 1 build on the same time
+        disableConcurrentBuilds(), 
+        //log 10 build
+        buildDiscarder(logRotator(numToKeepStr: '10')) 
     }
-    tools {
+ 
+  tools {
  	    maven "MAVEN3"
  	    jdk "OracleJDK8"
  	}
-
-     environment {
+ 
+  environment {
          registryCredential = 'ecr:us-east-1:awscreds'
          appRegistry = "750232146652.dkr.ecr.us-east-1.amazonaws.com/vprofileappimg"
          vprofileRegistry = "https://750232146652.dkr.ecr.us-east-1.amazonaws.com"
          cluster = "vprofile"
          service = "vprofileappsvs"
      }
-   stages {
-     stage('Fetch code'){
-       steps {
+  stages {
+    stage('Fetch code'){
+      steps {
          git branch: 'docker', url: 'https://github.com/svinsi/jenkins.git'
        }
      }
