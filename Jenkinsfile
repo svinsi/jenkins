@@ -1,5 +1,5 @@
 pipeline {
- 	agent { node { label 'SILVER' } }
+ 	agent any
     tools {
  	    maven "MAVEN3"
  	    jdk "OracleJDK8"
