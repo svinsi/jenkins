@@ -93,7 +93,29 @@ pipeline {
              }
            }
       }
+//test db 
+        stage('Build db Image') {
+        steps {
 
+          script {
+                 dockerImage = docker.build( "750232146652.dkr.ecr.us-east-1.amazonaws.com/vprofiledb" + ":$BUILD_NUMBER", "./Docker-files/db/")
+              }
+
+      }
+
+     }
+
+     stage('Upload db Image') {
+           steps{
+             script {
+               docker.withRegistry( vprofileRegistry, registryCredential ) {
+                 dockerImage.push("$BUILD_NUMBER")
+                 dockerImage.push('latest')
+               }
+             }
+           }
+      }
+ //  
       stage('Deploy to ecs') {
            steps {
          withAWS(credentials: 'awscreds', region: 'us-east-1') {
