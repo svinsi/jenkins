@@ -64,7 +64,16 @@ pipeline {
                  }
              }
          }
+     stage('whoami') {
+        steps {
 
+          script {
+                 whoami
+              }
+
+      }
+
+     }
      stage('Build App Image') {
         steps {
 
