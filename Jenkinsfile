@@ -1,5 +1,5 @@
 pipeline {
- 	agent any
+ 	agent { node { label 'SILVER' } }
   options { 
         //only 1 build on the same time
         disableConcurrentBuilds() 
