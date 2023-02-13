@@ -1,5 +1,8 @@
 pipeline {
  	agent { node { label 'SILVER' } }
+  options { 
+        disableConcurrentBuilds() 
+    }
     tools {
  	    maven "MAVEN3"
  	    jdk "OracleJDK8"
@@ -64,16 +67,7 @@ pipeline {
                  }
              }
          }
-     stage('whoami') {
-        steps {
 
-          script {
-              sh  'whoami'
-              }
-
-      }
-
-     }
      stage('Build App Image') {
         steps {
 
