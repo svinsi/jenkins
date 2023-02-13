@@ -22,7 +22,7 @@ pipeline {
   stages {
     stage('Fetch code'){
       steps {
-         git branch: 'docker', url: 'https://github.com/svinsi/jenkins.git'
+         git branch: 'main', url: 'https://github.com/svinsi/vprofileproject.git'
        }
      }
 
