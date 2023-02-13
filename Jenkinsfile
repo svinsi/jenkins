@@ -1,8 +1,9 @@
 pipeline {
+ 	agent { node { label 'SILVER' } }
+    tools {
  	    maven "MAVEN3"
  	    jdk "OracleJDK8"
  	}
- //
 
      environment {
          registryCredential = 'ecr:us-east-1:awscreds'
@@ -95,4 +96,4 @@ pipeline {
       }
 
    }
- }
+}
