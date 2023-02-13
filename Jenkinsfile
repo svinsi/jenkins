@@ -68,7 +68,7 @@ pipeline {
         steps {
 
           script {
-                 whoami
+              sh  'whoami'
               }
 
       }
