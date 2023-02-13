@@ -99,4 +99,10 @@ pipeline {
       }
 
    }
+ post { 
+        // Clean after build 
+        always { 
+            cleanWs() 
+        } 
+    }
 }
