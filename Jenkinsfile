@@ -142,11 +142,11 @@ pipeline {
             steps {
               withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
                     sh """
-                    rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/compose/docker-compose.yml  ${userName}@172.31.24.71:/tmp/
+                    rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/compose/docker-compose.yml  ${userName}@172.31.19.115:/tmp/
                     """
          withAWS(credentials: 'awscreds', region: 'us-east-1') {
-           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.24.71 "docker compose -f /tmp/docker-compose.yml up -d"'
-           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.24.71 "docker ps -a"'
+           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
+           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
          }
 //             sh '''
 //               ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "cat /etc/os-release > /tmp/zsm"
