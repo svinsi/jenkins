@@ -17,7 +17,7 @@ pipeline {
          webImg = "vprofileweb"
          appImg = "vprofileappimg"
          dbImg  = "vprofiledb"
-         ecrReg = "750232146652.dkr.ecr.us-east-1.amazonaws.com/"
+         ecrReg = "public.ecr.aws/o3n9i1w1/"
      }
   stages {
     stage('Fetch code'){
@@ -144,10 +144,10 @@ pipeline {
                     sh """
                     rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/compose/docker-compose.yml  ${userName}@172.31.19.115:/tmp/
                     """
-         withAWS(credentials: 'awscreds', region: 'us-east-1') {
+
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
-         }
+
 //             sh '''
 //               ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "cat /etc/os-release > /tmp/zsm"
 // '''        
