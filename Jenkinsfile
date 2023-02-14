@@ -14,10 +14,10 @@ pipeline {
  
   environment {
          registryCredential = 'ecr:us-east-1:awscreds'
-         appRegistry = "750232146652.dkr.ecr.us-east-1.amazonaws.com/vprofileappimg"
-         vprofileRegistry = "https://750232146652.dkr.ecr.us-east-1.amazonaws.com"
-         cluster = "vprofile"
-         service = "vprofileappsvs"
+         webImg = "vprofileweb"
+         appImg = "vprofileappimg"
+         dbImg  = "vprofiledb"
+         ecrReg = "https://750232146652.dkr.ecr.us-east-1.amazonaws.com/"
      }
   stages {
     stage('Fetch code'){
@@ -72,11 +72,33 @@ pipeline {
              }
          }
 
+     stage('Build Web Image') {
+        steps {
+
+          script {
+                 dockerImage = docker.build( ecrReg +  webImg + ":$BUILD_NUMBER", "./Docker-files/web/")
+              }
+
+      }
+
+     }
+
+     stage('Upload Web Image') {
+           steps{
+             script {
+               docker.withRegistry( ecrReg, registryCredential ) {
+                 dockerImage.push("$BUILD_NUMBER")
+                 dockerImage.push('latest')
+               }
+             }
+           }
+      }
+
      stage('Build App Image') {
         steps {
 
           script {
-                 dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
+                 dockerImage = docker.build( ecrReg +  appImg + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
               }
 
       }
@@ -86,19 +108,19 @@ pipeline {
      stage('Upload App Image') {
            steps{
              script {
-               docker.withRegistry( vprofileRegistry, registryCredential ) {
+               docker.withRegistry( ecrReg, registryCredential ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
              }
            }
       }
-//test db 
+
         stage('Build db Image') {
         steps {
 
           script {
-                 dockerImage = docker.build( "750232146652.dkr.ecr.us-east-1.amazonaws.com/vprofiledb" + ":$BUILD_NUMBER", "./Docker-files/db/")
+                 dockerImage = docker.build( ecrReg +  appImg + ":$BUILD_NUMBER", "./Docker-files/db/")
               }
 
       }
@@ -108,20 +130,12 @@ pipeline {
      stage('Upload db Image') {
            steps{
              script {
-               docker.withRegistry( vprofileRegistry, registryCredential ) {
+               docker.withRegistry( ecrReg, registryCredential ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
              }
            }
-      }
- //  
-      stage('Deploy to ecs') {
-           steps {
-         withAWS(credentials: 'awscreds', region: 'us-east-1') {
-           sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
-         }
-       }
       }
 
    }
