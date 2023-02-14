@@ -148,18 +148,15 @@ pipeline {
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
 
-//             sh '''
-//               ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "cat /etc/os-release > /tmp/zsm"
-// '''        
     }
        }
      }
 
    }
-//  post { 
-//         // Clean after build 
-//         always { 
-//             cleanWs() 
-//         } 
-//     }
+ post { 
+        // Clean after build 
+        always { 
+            cleanWs() 
+        } 
+    }
 }
