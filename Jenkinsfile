@@ -138,11 +138,24 @@ pipeline {
            }
       }
 
-   }
- post { 
-        // Clean after build 
-        always { 
-            cleanWs() 
-        } 
+      stage('Fetch code'){
+            steps {
+              withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+                    sh """
+                    echo $WORKSPACE 
+                    scp  $WORKSPACE/compose/docker-compose.yml -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115:/tmp/ """
+//             sh '''
+//               ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "cat /etc/os-release > /tmp/zsm"
+// '''        
     }
+       }
+     }
+
+   }
+//  post { 
+//         // Clean after build 
+//         always { 
+//             cleanWs() 
+//         } 
+//     }
 }
