@@ -86,7 +86,7 @@ pipeline {
      stage('Upload Web Image') {
            steps{
              script {
-               docker.withRegistry( "https://" + ecrReg, registryCredential ) {
+               docker.withRegistry( "https://" + ecrReg ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
@@ -108,7 +108,7 @@ pipeline {
      stage('Upload App Image') {
            steps{
              script {
-               docker.withRegistry( "https://" + ecrReg, registryCredential ) {
+               docker.withRegistry( "https://" + ecrReg ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
@@ -130,7 +130,7 @@ pipeline {
      stage('Upload db Image') {
            steps{
              script {
-               docker.withRegistry( "https://" + ecrReg, registryCredential ) {
+               docker.withRegistry( "https://" + ecrReg ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
