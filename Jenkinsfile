@@ -17,7 +17,7 @@ pipeline {
          webImg = "vprofileweb"
          appImg = "vprofileappimg"
          dbImg  = "vprofiledb"
-         ecrReg = "https://750232146652.dkr.ecr.us-east-1.amazonaws.com/"
+         ecrReg = "750232146652.dkr.ecr.us-east-1.amazonaws.com/"
      }
   stages {
     stage('Fetch code'){
@@ -86,7 +86,7 @@ pipeline {
      stage('Upload Web Image') {
            steps{
              script {
-               docker.withRegistry( ecrReg, registryCredential ) {
+               docker.withRegistry( "https://" + ecrReg, registryCredential ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
@@ -108,7 +108,7 @@ pipeline {
      stage('Upload App Image') {
            steps{
              script {
-               docker.withRegistry( ecrReg, registryCredential ) {
+               docker.withRegistry( "https://" + ecrReg, registryCredential ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
@@ -130,7 +130,7 @@ pipeline {
      stage('Upload db Image') {
            steps{
              script {
-               docker.withRegistry( ecrReg, registryCredential ) {
+               docker.withRegistry( "https://" + ecrReg, registryCredential ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
