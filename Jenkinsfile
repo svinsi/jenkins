@@ -143,9 +143,9 @@ pipeline {
               withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
                     sh """
                     echo $WORKSPACE 
-                    scp  $WORKSPACE/compose/docker-compose.yml -o StrictHostKeyChecking=no -i ${identity} ${userName}@34.226.208.250:/tmp/ """
+                    scp  $WORKSPACE/compose/docker-compose.yml -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.24.71:/tmp/ """
          withAWS(credentials: 'awscreds', region: 'us-east-1') {
-           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@34.226.208.250 "docker compose -f /tmp/docker-compose.yml up -d"'
+           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.24.71 "docker compose -f /tmp/docker-compose.yml up -d"'
            sh 'docker ps -a'
          }
 //             sh '''
