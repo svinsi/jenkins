@@ -138,7 +138,7 @@ pipeline {
            }
       }
 
-      stage('Fetch code'){
+      stage('Run Docker-compose'){
             steps {
               withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
                     sh """
