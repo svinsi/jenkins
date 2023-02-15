@@ -149,6 +149,8 @@ pipeline {
                     """
                 docker.withRegistry( "https://" + ecrReg, registryCredential ) {
                 sh """ 
+                whoami
+                cat ~/.docker/config.json
                 ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 '
                 docker pull ${ ecrReg + webImg + ':latest' }
                 docker pull ${ ecrReg + appImg + ':latest' }
@@ -164,10 +166,10 @@ pipeline {
     }
 
    }
- post { 
-        // Clean after build 
-        always { 
-            cleanWs() 
-        } 
-    }
+//  post { 
+//         // Clean after build 
+//         always { 
+//             cleanWs() 
+//         } 
+//     }
 }
