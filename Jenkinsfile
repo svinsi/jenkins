@@ -143,11 +143,12 @@ pipeline {
 
       stage('Run Docker-compose'){
             steps {
+              script {
               withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
                     sh """
                     rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/compose/docker-compose.yml  ${userName}@172.31.19.115:/tmp/
                     """
-              docker.withRegistry( "https://" + ecrReg, registryCredential ) {
+                docker.withRegistry( "https://" + ecrReg, registryCredential ) {
                 sh """
                 docker pull ${ ecrReg + webImg + ':latest' }
                 docker pull ${ ecrReg + appImg + ':latest' }
@@ -159,6 +160,7 @@ pipeline {
     }
        }
      }
+    }
 
    }
  post { 
