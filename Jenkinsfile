@@ -86,13 +86,12 @@ pipeline {
      stage('Upload Web Image') {
            steps{
              script {
-               withAWS(credentials: 'awscreds', region: 'us-east-1'){
-                 sh "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/o3n9i1w1"
+
                docker.withRegistry( "https://" + ecrReg, registryCredential ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
                }
-               }
+
              }
            }
       }
