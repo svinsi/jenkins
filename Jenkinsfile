@@ -148,10 +148,12 @@ pipeline {
                     rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/compose/docker-compose.yml  ${userName}@172.31.19.115:/tmp/
                     """
                 docker.withRegistry( "https://" + ecrReg, registryCredential ) {
-                sh """
+                sh """ 
+                ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 '
                 docker pull ${ ecrReg + webImg + ':latest' }
                 docker pull ${ ecrReg + appImg + ':latest' }
                 docker pull ${ ecrReg + dbImg + ':latest' }
+                '
                 """
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
