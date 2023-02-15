@@ -122,7 +122,7 @@ pipeline {
         steps {
 
           script {
-                 dockerImage = docker.build( ecrReg +  appImg + ":$BUILD_NUMBER", "./Docker-files/db/")
+                 dockerImage = docker.build( ecrReg + dbImg + ":$BUILD_NUMBER", "./Docker-files/db/")
               }
 
       }
@@ -151,10 +151,11 @@ pipeline {
                 sh """ 
                 docker save -o $WORKSPACE/Docker-files/${ webImg + '.tar'} ${ ecrReg + webImg + ':latest' } 
                 docker save -o $WORKSPACE/Docker-files/${ appImg + '.tar'} ${ ecrReg + appImg + ':latest' }
-                docker save -o $WORKSPACE/Docker-files/${ dbImg + '.tar'} ${ ecrReg + dbImg + ':latest' }  
+                docker save -o $WORKSPACE/Docker-files/${ dbImg + '.tar'} ${ ecrReg + dbImg + ':latest' } 
+                rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/Docker-files/*.tar ${userName}@172.31.19.115:/tmp/ 
                 """
-          //  sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
-          //  sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
+           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
+           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
     }
        }
      }
