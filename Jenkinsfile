@@ -152,7 +152,8 @@ pipeline {
                 docker save -o $WORKSPACE/Docker-files/${ webImg + '.tar'} ${ ecrReg + webImg + ':latest' } 
                 docker save -o $WORKSPACE/Docker-files/${ appImg + '.tar'} ${ ecrReg + appImg + ':latest' }
                 docker save -o $WORKSPACE/Docker-files/${ dbImg + '.tar'} ${ ecrReg + dbImg + ':latest' } 
-                rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/Docker-files/*.tar ${userName}@172.31.19.115:/tmp/ 
+                rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/Docker-files/*.tar ${userName}@172.31.19.115:/tmp/
+                docker load -i /tmp/*.tar 
                 """
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
