@@ -86,71 +86,74 @@ pipeline {
      stage('Upload Web Image') {
            steps{
              script {
+               withAWS(credentials: 'awscreds', region: 'us-east-1'){
+                 sh "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/o3n9i1w1"
                docker.withRegistry( "https://" + ecrReg ) {
                  dockerImage.push("$BUILD_NUMBER")
                  dockerImage.push('latest')
+               }
                }
              }
            }
       }
 
-     stage('Build App Image') {
-        steps {
+    //  stage('Build App Image') {
+    //     steps {
 
-          script {
-                 dockerImage = docker.build( ecrReg +  appImg + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
-              }
+    //       script {
+    //              dockerImage = docker.build( ecrReg +  appImg + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
+    //           }
 
-      }
+    //   }
 
-     }
+    //  }
 
-     stage('Upload App Image') {
-           steps{
-             script {
-               docker.withRegistry( "https://" + ecrReg ) {
-                 dockerImage.push("$BUILD_NUMBER")
-                 dockerImage.push('latest')
-               }
-             }
-           }
-      }
+    //  stage('Upload App Image') {
+    //        steps{
+    //          script {
+    //            docker.withRegistry( "https://" + ecrReg ) {
+    //              dockerImage.push("$BUILD_NUMBER")
+    //              dockerImage.push('latest')
+    //            }
+    //          }
+    //        }
+    //   }
 
-        stage('Build db Image') {
-        steps {
+    //     stage('Build db Image') {
+    //     steps {
 
-          script {
-                 dockerImage = docker.build( ecrReg +  appImg + ":$BUILD_NUMBER", "./Docker-files/db/")
-              }
+    //       script {
+    //              dockerImage = docker.build( ecrReg +  appImg + ":$BUILD_NUMBER", "./Docker-files/db/")
+    //           }
 
-      }
+    //   }
 
-     }
+    //  }
 
-     stage('Upload db Image') {
-           steps{
-             script {
-               docker.withRegistry( "https://" + ecrReg ) {
-                 dockerImage.push("$BUILD_NUMBER")
-                 dockerImage.push('latest')
-               }
-             }
-           }
-      }
+    //  stage('Upload db Image') {
+    //        steps{
+    //          script {
+    //            docker.withRegistry( "https://" + ecrReg ) {
+    //              dockerImage.push("$BUILD_NUMBER")
+    //              dockerImage.push('latest')
+    //            }
+    //          }
+    //        }
+    //   }
 
-      stage('Run Docker-compose'){
-            steps {
-              withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-                    sh """
-                    rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/compose/docker-compose.yml  ${userName}@172.31.19.115:/tmp/
-                    """
+    //   stage('Run Docker-compose'){
+    //         steps {
+    //           withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+    //                 sh """
+    //                 rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/compose/docker-compose.yml  ${userName}@172.31.19.115:/tmp/
+    //                 """
 
-           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
-           sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
+    //        sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
+    //        sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
 
-    }
-       }
-     }
+    // }
+    //    }
+    //  }
 
    }
  post { 
