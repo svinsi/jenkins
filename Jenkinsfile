@@ -144,8 +144,12 @@ pipeline {
             rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/Docker-files/*.tar ${userName}@172.31.19.115:/tmp/
 
             ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 'docker load -i /tmp/${ webImg + '.tar'}'
+              docker load -i /tmp/${ webImg + '.tar'}
+              sleep 5
               docker load -i /tmp/${ appImg + '.tar'}
-              docker load -i /tmp/${ dbImg + '.tar'} 
+              sleep 5
+              docker load -i /tmp/${ dbImg + '.tar'}
+              sleep 5 
               docker compose -f /tmp/docker-compose.yml up -d
               docker ps -a
             """
