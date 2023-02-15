@@ -153,9 +153,11 @@ pipeline {
                 docker save -o $WORKSPACE/Docker-files/${ appImg + '.tar'} ${ ecrReg + appImg + ':latest' }
                 docker save -o $WORKSPACE/Docker-files/${ dbImg + '.tar'} ${ ecrReg + dbImg + ':latest' } 
                 rsync -av --delete -e "ssh -o StrictHostKeyChecking=no -i ${identity}" $WORKSPACE/Docker-files/*.tar ${userName}@172.31.19.115:/tmp/
-                docker load -i /tmp/${ webImg + '.tar'}
-                docker load -i /tmp/${ appImg + '.tar'}
-                docker load -i /tmp/${ dbImg + '.tar'} 
+                """
+                sh """
+                ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 'docker load -i /tmp/${ webImg + '.tar'}'
+                ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 'docker load -i /tmp/${ appImg + '.tar'}'
+                ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 'docker load -i /tmp/${ dbImg + '.tar'}' 
                 """
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
            sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
@@ -165,10 +167,10 @@ pipeline {
     }
 
    }
-//  post { 
-//         // Clean after build 
-//         always { 
-//             cleanWs() 
-//         } 
-//     }
+ post { 
+        // Clean after build 
+        always { 
+            cleanWs() 
+        } 
+    }
 }
