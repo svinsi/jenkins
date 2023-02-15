@@ -149,9 +149,9 @@ pipeline {
                     """
 
                 sh """ 
-                docker save -o $WORKSPACE/Docker-files/${ ecrReg + webImg }.tar ${ ecrReg + webImg + ':latest' } 
-                docker save -o $WORKSPACE/Docker-files/${ ecrReg + appImg }.tar ${ ecrReg + appImg + ':latest' }
-                docker save -o $WORKSPACE/Docker-files/${ ecrReg + dbImg }.tar ${ ecrReg + dbImg + ':latest' }  
+                docker save -o $WORKSPACE/Docker-files/${ ecrReg + webImg + '.tar'} ${ ecrReg + webImg + ':latest' } 
+                docker save -o $WORKSPACE/Docker-files/${ ecrReg + appImg + '.tar'} ${ ecrReg + appImg + ':latest' }
+                docker save -o $WORKSPACE/Docker-files/${ ecrReg + dbImg + '.tar'} ${ ecrReg + dbImg + ':latest' }  
                 """
           //  sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker compose -f /tmp/docker-compose.yml up -d"'
           //  sh 'ssh -o StrictHostKeyChecking=no -i ${identity} ${userName}@172.31.19.115 "docker ps -a"'
