@@ -3,7 +3,7 @@ pipeline {
     options { 
       //only 1 build on the same time
       disableConcurrentBuilds() 
-      //log 10 build
+      //save log 10 build on master 
       buildDiscarder(logRotator(numToKeepStr: '10')) 
     }
  
@@ -14,10 +14,10 @@ pipeline {
  
   environment {
     registryCredential = 'ecr:us-east-1:awscreds'
-         webImg = "vprofileweb"
-         appImg = "vprofileappimg"
-         dbImg  = "vprofiledb"
-         ecrReg = "750232146652.dkr.ecr.us-east-1.amazonaws.com/"
+      webImg = "vprofileweb"
+      appImg = "vprofileappimg"
+      dbImg  = "vprofiledb"
+      ecrReg = "750232146652.dkr.ecr.us-east-1.amazonaws.com/"
   }
   stages {
     stage ('Fetch code') {
@@ -43,7 +43,7 @@ pipeline {
       }
     }
 
-    stage ('build && SonarQube analysis') {
+    stage ('SonarQube analysis') {
       environment {
         scannerHome = tool 'sonar4.7'
       }
@@ -130,7 +130,7 @@ pipeline {
       }
     }
 
-    stage ('Run Docker-compose') {
+    stage ('Deploy') {
       steps {
         script {
           withCredentials([sshUserPrivateKey(credentialsId: 'sshdockervm', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
