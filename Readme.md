@@ -1,0 +1,1 @@
+There is Jenkins JSON file for launching my final project from the EPAM L1 course. There is Java project Vprofile. This is a Java project that is deployed on Tomcat with a connection to mysql database. I used docker containerization technology to implement this project in AWS Cloud environment.
